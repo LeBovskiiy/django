@@ -1,0 +1,15 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}search result{% endblock title %}
+
+{% load static %}
+
+{% block content %}
+    <center>
+        {% for product in products %}
+        <img src="{{ product.image }}">
+
+    </center>
+        {% endfor %}
+
+{% endblock content %}

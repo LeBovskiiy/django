@@ -1,0 +1,15 @@
+
+.card-box {
+    display: inline-flex;
+    list-style-type: none;
+}
+
+.carusel-section {
+    display: flex;
+    justify-content: center;
+}
+
+.d-flex {
+    margin-left: 500px;
+    margin-right: 100px;
+}
