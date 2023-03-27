@@ -4,23 +4,36 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="navbar-r">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           </ul>
-      <form class="d-flex" method=POST action="{% url 'search-result' %}">
+      <form class="d-flex" method="get" action="{% url 'search-result' %}">
         {% csrf_token %}
-        <input class="form-control me-2" name="searched" type="search" placeholder="Search" aria-label="Search">
+        <input name="q" type="text">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
       {% if user.is_authenticated %}
-      <div class="user-auth"></div>
-        Hi {{ user.username }}
-      <p><a href="{% url 'logout' %}">Log Out</a></p>
-      {% else %}
-      You are not logged in
-      <div class="log-in"></div>
-      <div class="sign-up"></div>
-      {% endif %}
+
+      <div class="dropdown">
+        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+          {{ user.username }}
+        </a>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
+        <li><a class="dropdown-item" href="#">Another action</a></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+      </ul>
+      </div>
     </div>
+  </div>
+      {% else %}
+      <div>
+        <a href="{% url 'login' %}"><button type="button" class="log-in">Log In</button></a>
+      </div>
+      <div class="sign-up">
+        <a href="{% url 'signup' %}"><button type="button">Sign Up</button></a>
+      </div>
+      {% endif %}
   </div>
 </nav>

@@ -5,11 +5,15 @@
 {% load static %}
 
 {% block content %}
-    <center>
-        {% for product in products %}
-        <img src="{{ product.image }}">
 
-    </center>
+    <ul>
+   {% for product in products %}
+        <li>
+            {{ product.name }}, <img src="{{ product.image.url }}" alt="" width="10%" height="20%">
+        </li>
         {% endfor %}
+    </ul>
+
+
 
 {% endblock content %}

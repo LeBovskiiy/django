@@ -10,6 +10,16 @@
 }
 
 .d-flex {
-    margin-left: 500px;
-    margin-right: 100px;
+    margin-left: 400px;
+    margin-right: 20px;
+}
+
+.navbar-r {
+    position: fixed;
+    left: 1100px;
+}
+
+.dropdown {
+    position: fixed;
+    right: 30px;
 }
