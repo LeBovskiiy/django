@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.views.generic import TemplateView, DetailView, ListView
 from .models import Product
-from .forms import SearchProductForm
+from users.models import UserBasket
 
 
 class HomePageViews(TemplateView):
@@ -32,3 +32,10 @@ class ProductDetailView(DetailView):
     template_name = 'shop/product_detail.html'
     context_object_name = 'product_detail'
     query_pk_and_slug = True
+
+
+class UserBasketView(ListView):
+    model = UserBasket
+    template_name = 'shop/basket.html'
+    context_object_name = 'product_in_basket'
+

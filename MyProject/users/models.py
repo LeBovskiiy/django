@@ -12,4 +12,4 @@ class CustomUser(AbstractUser, BaseUserManager):
 class UserBasket(models.Model):
     """Корзина для пользователя, где будут храниться товары"""
     handler = models.OneToOneField(to=CustomUser, on_delete=models.CASCADE)
-    basket = models.ForeignKey(to=Product, on_delete=models.CASCADE, blank=True, null=True)
+    basket = models.ForeignKey(to=Product, on_delete=models.CASCADE, related_name='bascet_product', blank=True, null=True)
