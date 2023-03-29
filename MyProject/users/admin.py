@@ -4,8 +4,6 @@ from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser, UserBasket
 
-admin.site.register(UserBasket)
-
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
@@ -14,4 +12,5 @@ class CustomUserAdmin(UserAdmin):
     list_display = ['email', 'username', 'phone']
 
 
+admin.site.register(UserBasket)
 admin.site.register(CustomUser, CustomUserAdmin)

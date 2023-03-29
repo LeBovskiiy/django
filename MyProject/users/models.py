@@ -3,13 +3,12 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from shop.models import Product
 
+class UserBasket(models.Model):
+    basket = models.ManyToManyField(Product, related_name='basket_p', auto_created=True, default=None)
+    handler = models.OneToOneField('CustomUser', on_delete=models.CASCADE)
+
 
 class CustomUser(AbstractUser, BaseUserManager):
-    """Кастомная аутентификацыя"""
+    """Кастомная модель юзера, с телефоном и корзиной"""
     phone = models.CharField('User phone number', max_length=16, validators=[RegexValidator(r"^\+?\d{9,15}$")])
 
-
-class UserBasket(models.Model):
-    """Корзина для пользователя, где будут храниться товары"""
-    handler = models.OneToOneField(to=CustomUser, on_delete=models.CASCADE)
-    basket = models.ForeignKey(to=Product, on_delete=models.CASCADE, related_name='bascet_product', blank=True, null=True)
