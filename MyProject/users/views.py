@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, TemplateView
 from django.urls import reverse_lazy
+
 
 from .forms import CustomUserCreationForm
 
@@ -10,6 +11,4 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('login')
     template_name = 'users/signup.html'
 
-#
-# class LogInView(TemplateView):
-#     template_name = 'users/registration/login.html'
+

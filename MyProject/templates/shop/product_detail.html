@@ -7,6 +7,7 @@
         <h1>{{ product_detail.name }}</h1>
         <h2>{{ product_detail.description }}</h2>
         <h4>Price: {{ product_detail.price }}</h4>
+        <a href="{% url 'add-to-cart' product_detail.pk %}">Add product to basket</a>
     </li>
 </ul>
 

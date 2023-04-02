@@ -14,6 +14,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to=user_directory_path, verbose_name='Photo', blank=True, null=True)
     tags = models.ManyToManyField(to="ProductTags", blank=True)
     categories = models.ManyToManyField(to="ProductCategory", blank=True)
+    quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return self.name
