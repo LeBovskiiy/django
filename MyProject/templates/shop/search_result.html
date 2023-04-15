@@ -6,11 +6,22 @@
 
 {% block content %}
 
+
+<form method="get">
+    {% csrf_token %}
+    <select name="sort-by">
+        <option value="price">Price</option>
+        <option value="name">Name</option>
+        <option value="-price">-Price</option>
+    </select>
+    <button type="submit">Sort..</button>
+</form>
     <ul>
    {% for product in products %}
         <li>
             <a href="{% url 'product-detail' product.pk %}">{{ product.name }}</a>:<br>
-            <img src="{{ product.image.url }}" alt="" width="10%" height="20%">
+            price: {{ product.price }}
+            <a href="{% url 'product-detail' product.pk %}"><img src="{{ product.image.url }}" alt="" width="10%" height="20%"></a>
         </li>
         {% endfor %}
     </ul>

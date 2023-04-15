@@ -32,17 +32,21 @@
 </section>
 <div class="cards">
     <section class="product-box">
-    {% for prod in products %}
+    {% for product in products %}
     <ul class="card-box">
-
         <li>
             <div class="card" style="width: 18rem;">
-            <img src='{{ prod.image.url }}' class="card-img-top" alt="...">
-            <div class="card-body">
-            <p class="card-text"><a href="{% url 'product-detail' prod.pk %}">{{ prod.name }}</a></p>
-                price: {{ prod.price }}
+                <div class="add-to-basket">
+                <a href="{% url 'add-to-cart' product.pk %}"><img src="{% static 'img/basket.png' %}" width="20px" height="20px"></a>
+                </div>
+                <a href="{% url 'product-detail' product.pk %}."><img src='{{ product.image.url }}' class="card-img-top" alt="..."></a>
+                <div class="card-body">
+                <p class="card-text"><a href="{% url 'product-detail' product.pk %}">{{ product.name }}</a></p>
+                price: {{ product.price }}
+
+                
+                </div>
             </div>
-        </div>
         </li>
     </ul>
 

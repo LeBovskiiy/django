@@ -23,3 +23,15 @@
     position: fixed;
     right: 30px;
 }
+
+.counter {
+    width: 5px;
+    height: 5px;
+}
+
+.add-to-basket {
+    position: absolute;
+    top: 0;
+    right: 10;
+    down: 4;
+}
