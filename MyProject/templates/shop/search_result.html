@@ -5,14 +5,25 @@
 {% load static %}
 
 {% block content %}
+<script type="text/javascript">window.addEventListener("beforeunload", function() {
+    fetch('/clear_session_query/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}' // добавьте эту строку, если используете CSRF-токен
+        },
+        body: JSON.stringify({})
+    })
+});
+</script>
 
 
 <form method="get">
     {% csrf_token %}
     <select name="sort-by">
-        <option value="price">Price</option>
-        <option value="name">Name</option>
-        <option value="-price">-Price</option>
+        <option value="price">По возрастанию</option>
+        <option value="name">По имени</option>
+        <option value="-price">По убыванию</option>
     </select>
     <button type="submit">Sort..</button>
 </form>
