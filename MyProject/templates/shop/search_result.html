@@ -28,7 +28,8 @@
     <button type="submit">Sort..</button>
 </form>
     <ul>
-   {% for product in products %}
+
+        {% for product in products %}
         <li>
             <a href="{% url 'product-detail' product.pk %}">{{ product.name }}</a>:<br>
             price: {{ product.price }}

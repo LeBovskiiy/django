@@ -6,10 +6,12 @@
     {% if cart_items %}
     {% for cart_item in cart_items %}
     <ul>
-        <li>{{ cart_item.product.name }} x {{ cart_item.quantity }}</li>
+        <li>{{ cart_item.product.name }}  : <a href="{% url 'cart-action' cart_item.product.pk 'subtract' %}">-</a>
+         {{ cart_item.quantity }} <a href="{% url 'cart-action' cart_item.product.pk 'add' %}">+</a></li>
+        <a href="{% url 'cart-action' cart_item.product.pk 'delete' %}">Remove from cart</a>
     </ul>
-    <a href="{% url 'remove-from-cart' cart_item.product.pk %}">Remove from cart</a>
-    {% endfor %}
+         
+        {% endfor %}
     {% else %}
     <p>Ваша корзина пуста</p>
     {% endif %}

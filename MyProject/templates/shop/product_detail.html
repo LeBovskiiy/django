@@ -10,7 +10,7 @@
         <h1>{{ product_detail.name }}</h1>
         <h2>{{ product_detail.description }}</h2>
         <h4>Price: {{ product_detail.price }}</h4>
-        <button id="add-to-cart-button" type="submit"><a href="{% url 'add-to-cart' product_detail.pk %}">Add to basket</a></button>
+        <button id="add-to-cart-button" type="submit"><a href="{% url 'cart-action' product_detail.pk 'add' %}">Add to basket</a></button>
     </li>
 </ul>
 
