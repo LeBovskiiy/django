@@ -14,7 +14,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('users/', include('users.urls')),
     path('users/', include('django.contrib.auth.urls')),
-    path('path/to/method-not-allowed/', MethodNotAllowedView.as_view(), name='method-not-allowed')
+    path('method-not-allowed/', MethodNotAllowedView.as_view(), name='method-not-allowed')
 ]
 
 if settings.DEBUG:

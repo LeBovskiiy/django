@@ -1,23 +1,22 @@
 from django.test import TestCase, Client
 
+import os
+from pathlib import Path
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from .models import Product, ProductCategory
 from .views import *
 
-small_gif = (
-    b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
-    b'\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
-    b'\x02\x4c\x01\x00\x3b'
-)
-uploaded = SimpleUploadedFile('test_gif.gif', small_gif, content_type='image/gif')
 
 class ProductTests(TestCase):
 
     def setUp(self):
+        file_content = b'test_file'
+        file_name = 'product_name_test_file.png'
+        self.upload_file = SimpleUploadedFile(file_name, file_content, content_type='image/png')
         ProductCategory.objects.create(category='category name')
         category = ProductCategory.objects.get(id=1)
-        Product.objects.create(name='product_name',  description='description', price=500, image=uploaded)
+        Product.objects.create(name='product_name',  description='description', price=500, image=self.upload_file)
         c = Client()
         response = c.post('/login/', {"username": "John", "password": "123456789"})
         response.status_code
@@ -28,7 +27,16 @@ class ProductTests(TestCase):
         self.assertEqual(prododuct.name, 'product_name')
         self.assertEqual(prododuct.description, 'description')
         self.assertEqual(prododuct.price, 500)
+    
+    def tearDown(self) -> None:
+        media_folder = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'media', 'shop')
+        image_list = []
+        for file in os.listdir(media_folder):
+            if 'test_file' in file:
+                image_list.append(file)
 
+        for i in image_list:
+            os.remove(path=media_folder + '\\' + i)
         
 class HomePageViewTestCase(TestCase):
     def setUp(self) -> None:
@@ -47,9 +55,12 @@ class SearchResultViewTestCase(TestCase):
     
     
     def setUp(self) -> None:
+        file_content = b'test_file'
+        file_name = 'test_file.png'
+        self.upload_file = SimpleUploadedFile(file_name, file_content, content_type='image/png')
         self.url = reverse('search-result')
-        self.product1 = Product.objects.create(name='product1', description='description', price=100, image=uploaded)
-        self.product2 = Product.objects.create(name='product2', description='description', price=200, image=uploaded)
+        self.product1 = Product.objects.create(name='product1', description='description', price=100, image=self.upload_file)
+        self.product2 = Product.objects.create(name='product2', description='description', price=200, image=self.upload_file)
         
 
     def test_search_without_sort(self):
@@ -92,3 +103,13 @@ class SearchResultViewTestCase(TestCase):
             [self.product1, self.product2], 
             ordered=False
         )
+    
+    def tearDown(self) -> None:
+        media_folder = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'media', 'shop')
+        image_list = []
+        for file in os.listdir(media_folder):
+            if 'test_file' in file:
+                image_list.append(file)
+
+        for i in image_list:
+            os.remove(path=media_folder + '\\' + i)

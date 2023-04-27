@@ -5,18 +5,6 @@
 {% load static %}
 
 {% block content %}
-<script type="text/javascript">window.addEventListener("beforeunload", function() {
-    fetch('/clear_session_query/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token }}' // добавьте эту строку, если используете CSRF-токен
-        },
-        body: JSON.stringify({})
-    })
-});
-</script>
-
 
 <form method="get">
     {% csrf_token %}
@@ -27,17 +15,18 @@
     </select>
     <button type="submit">Sort..</button>
 </form>
-    <ul>
-
+{% if products %}
+    <ul>        
         {% for product in products %}
         <li>
             <a href="{% url 'product-detail' product.pk %}">{{ product.name }}</a>:<br>
             price: {{ product.price }}
             <a href="{% url 'product-detail' product.pk %}"><img src="{{ product.image.url }}" alt="" width="10%" height="20%"></a>
         </li>
-        {% endfor %}
+        {% endfor %}    
     </ul>
-
-
+{% else %}
+    <h1>Товар по вашему запросу не найдено</h1>
+{% endif %}
 
 {% endblock content %}

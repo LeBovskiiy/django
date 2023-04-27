@@ -22,7 +22,7 @@ class HomePageViews(TemplateView, BaseView):
         return context
     def http_method_not_allowed(self, request, *args, **kwargs) -> http.HttpResponse:
         return super().http_method_not_allowed(request, *args, **kwargs)
-
+    
 
 class SearchResultView(ListView, BaseView):
     """Класс для работы с Сьорч-баром (из шаблона 'shop/navbar.html')"""
@@ -66,16 +66,6 @@ class SearchResultView(ListView, BaseView):
         else:
             return Product.objects.all()
     
-
-class ClearSearchQueryView(View):
-
-    def post(self, request: http.HttpRequest, *args, **kwargs):
-        if request.session.get('search_query'):
-            request.session.pop('search_query')
-            return http.JsonResponse({'success': True})
-        else:
-            return http.JsonResponse({'success': False})
-
 
 class ProductDetailView(DetailView, BaseView):
     """Вюха для просмотра деталей товара."""
@@ -141,12 +131,6 @@ class CartActionView(BasketView):
                     return redirect('basket')
                 else:
                     return http.JsonResponse({'success': False})
-                
-                
-            
-
-
-
-        
+                        
 def js_res(request):
     return http.JsonResponse({'success': True})
