@@ -1,4 +1,4 @@
-{% extends 'shop/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}search result{% endblock title %}
 
@@ -16,15 +16,18 @@
     <button type="submit">Sort..</button>
 </form>
 {% if products %}
+    {% for product in products %}
+    <div class="card-box">
     <ul>        
-        {% for product in products %}
         <li>
-            <a href="{% url 'product-detail' product.pk %}">{{ product.name }}</a>:<br>
+            <a href="{% url 'shop:product-detail' product.pk %}."><img src='{{ product.image.url }}' class="card-img-top" alt="..." width="70vw" height="100vh"></a>
+            <div class="card-body">
+            <p class="card-text"><a href="{% url 'shop:product-detail' product.pk %}">{{ product.name }}</a></p>
             price: {{ product.price }}
-            <a href="{% url 'product-detail' product.pk %}"><img src="{{ product.image.url }}" alt="" width="10%" height="20%"></a>
-        </li>
-        {% endfor %}    
+        </li> 
     </ul>
+    </div>
+    {% endfor %}   
 {% else %}
     <h1>Товар по вашему запросу не найдено</h1>
 {% endif %}

@@ -1,5 +1,6 @@
 from rest_framework import routers, serializers, viewsets
-from users.models import CustomUser, CartItem
+
+from users.models import CartItem, CustomUser
 
 
 class CustomUserSerializer(serializers.HyperlinkedModelSerializer):

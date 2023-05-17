@@ -33,5 +33,10 @@
     position: absolute;
     top: 0;
     right: 10;
-    down: 4;
 }
+
+.categories-list {
+    float: left;
+    width: 20%;
+    padding-left: 20px;
+  }

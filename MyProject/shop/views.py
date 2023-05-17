@@ -1,27 +1,37 @@
+from typing import Any, Dict
+
 import django.http as http
+from django import http
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404, render, redirect
 from django.db.models import Q, QuerySet
-from django.views.generic import TemplateView, DetailView, ListView, View
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import (CreateView, DetailView, ListView,
+                                  TemplateView, View)
+from rest_framework import generics
+
+from users.models import Basket, CartItem
 
 from .base_view import BaseView, MethodNotAllowedView
-from users.models import CartItem, Basket
-from .models import Product
+from .forms import *
+from .models import *
+from .serilizers import ProductSerializer
 
 
 class HomePageViews(TemplateView, BaseView):
     template_name = 'shop/home.html'
 
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['products'] = Product.objects.all()[:5]
-
-        return context
     def http_method_not_allowed(self, request, *args, **kwargs) -> http.HttpResponse:
         return super().http_method_not_allowed(request, *args, **kwargs)
+    
+    def get(self, request: HttpRequest) -> HttpResponse:
+        prodcuts = Product.objects.all()[:5]
+        categories = ProductCategory.objects.all()
+        context = {
+            'products': prodcuts,
+            'categories': categories
+        }
+        return render(request, 'shop/home.html', context)
     
 
 class SearchResultView(ListView, BaseView):
@@ -77,6 +87,24 @@ class ProductDetailView(DetailView, BaseView):
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
 
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['review_form'] = UserReviewForm()
+        context['comments'] = UserReview.objects.all().order_by('pub_date')[:10]
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        form = UserReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            user = self.request.user
+            review.product = self.get_object()
+            review.user = user
+            review.save()
+            review.reset()
+        else:
+            return render(request, 'shop/errors.html', {'message': 'Form is not valid'})
+            
 
 class BasketView(BaseView):
     """Просматриваем содержымое корзины"""
@@ -103,7 +131,7 @@ class CartActionView(BasketView):
                 if cart_item:
                     cart_item.quantity += 1
                     cart_item.save()
-                    return redirect('basket')
+                    return redirect('shop:basket')
                 else:
                     return http.JsonResponse({'success': False})
                 
@@ -115,10 +143,10 @@ class CartActionView(BasketView):
                     if cart_item.quantity >= 1:
                         cart_item.quantity -= 1
                         cart_item.save()
-                        return redirect('basket')
+                        return redirect('shop:basket')
                     else:
                         cart_item.delete()
-                        return redirect('basket')
+                        return redirect('shop:basket')
                 else:
                     return http.JsonResponse({'success': False})
                 
@@ -128,9 +156,62 @@ class CartActionView(BasketView):
                 cart_item = CartItem.objects.get(basket=basket, product=product)
                 if cart_item:
                     cart_item.delete()
-                    return redirect('basket')
+                    return redirect('shop:basket')
                 else:
                     return http.JsonResponse({'success': False})
-                        
-def js_res(request):
-    return http.JsonResponse({'success': True})
+
+
+class ProductAPIView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class CategoriesView(ListView, HomePageViews):
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+            self.categoryies = ProductCategory.objects.all()
+            self.category = ProductCategory.objects.get(category='For Everyone')
+            self.prodcuts = Product.objects.filter(categories=self.category)
+            context = {
+                'categories': self.category,
+                'products_catehory': self.prodcuts,
+                'categories': self.categoryies[:10]
+                       }
+            return render(request, 'shop/categories.html', context)
+
+
+class ProductCategoryView(ListView):
+
+    def get(self, request: HttpRequest, category_name) -> HttpResponse:
+        categorie = ProductCategory.objects.get(category=category_name)
+        products = Product.objects.filter(categories=categorie)
+        context = {
+            'products': products
+        }
+        return render(request, 'shop/prodcuts_by_categories.html', context=context)
+
+
+class UserReviewView(CreateView):
+    model = UserReview
+    form_class = UserReviewForm
+    success_url = 'users/review_thanks.html'
+
+    def form_valid(self, form):
+        user = self.request.user
+        self.object = form.save(commit=False)
+        self.object.user = user
+        self.object.save()
+        return super(UserReview, self).form_valid(form)
+
+
+class UsersCommentsView(ListView):
+    model = UserReview
+    queryset = UserReview.objects.all().order_by('pub_date')[:10]
+    paginate_by = 15
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        comments = UserReview.objects.all().order_by('pub_date')
+        context = {
+            'comments': '1 2 3 4 5 6 7 8 9 10'}
+        return render(request, 'shop/comments.html', context)
+    

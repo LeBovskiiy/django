@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}products{% endblock title %}
+{% block content %}
+    {% for i in products %}
+    <ul>
+        <li><a href="{% url 'product-detail' i.pk %}">{{ i }}</a></li>
+    </ul>
+    {% endfor %}
+{% endblock content %}

@@ -1,4 +1,4 @@
-{% extends 'shop/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Basket{% endblock title %}
 
@@ -6,9 +6,9 @@
     {% if cart_items %}
     {% for cart_item in cart_items %}
     <ul>
-        <li>{{ cart_item.product.name }}  : <a href="{% url 'cart-action' cart_item.product.pk 'subtract' %}">-</a>
-         {{ cart_item.quantity }} <a href="{% url 'cart-action' cart_item.product.pk 'add' %}">+</a></li>
-        <a href="{% url 'cart-action' cart_item.product.pk 'delete' %}">Remove from cart</a>
+        <li>{{ cart_item.product.name }}  : <a href="{% url 'shop:cart-action' cart_item.product.pk 'subtract' %}">-</a>
+         {{ cart_item.quantity }} <a href="{% url 'shop:cart-action' cart_item.product.pk 'add' %}">+</a></li>
+        <a href="{% url 'shop:cart-action' cart_item.product.pk 'delete' %}">Remove from cart</a>
     </ul>
          
         {% endfor %}
