@@ -1,7 +1,8 @@
 import django.http as http
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect, render
 from django.views import View
-from django.shortcuts import render, redirect
+
 
 class BaseView(View):
     """Базовый класс для всех вюшек, который обрабатывает исключения."""

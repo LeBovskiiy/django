@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'home' %}">Navbar</a>
+    <a class="navbar-brand" href="{% url 'shop:home' %}">Navbar</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -8,7 +8,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           </ul>
-      <form class="d-flex" method="get" action="{% url 'search-result' %}">
+      <form class="d-flex" method="get" action="{% url 'shop:search-result' %}">
         {% csrf_token %}
         <input name="q" type="text">
         <button class="btn btn-outline-success" type="submit">Search</button>
@@ -21,7 +21,7 @@
         </a>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
         <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
-        <li><a class="dropdown-item" href="{% url 'basket' %}">Basket</a></li>
+        <li><a class="dropdown-item" href="{% url 'shop:basket' %}">Basket</a></li>
         <li><a class="dropdown-item" href="#">Something else here</a></li>
       </ul>
       </div>
@@ -32,7 +32,7 @@
         <a href="{% url 'login' %}"><button type="button" class="log-in">Log In</button></a>
       </div>
       <div class="sign-up">
-        <a href="{% url 'signup' %}"><button type="button">Sign Up</button></a>
+        <a href="{% url 'users:signup' %}"><button type="button">Sign Up</button></a>
       </div>
       {% endif %}
   </div>

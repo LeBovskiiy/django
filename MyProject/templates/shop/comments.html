@@ -1,0 +1,9 @@
+
+{% block comments %}
+    {% for comment in comments %}
+        Rate: {{ comment.rate }} <br>
+        User: {{ comment.user.username }}<br>
+        Comment: {{ comment.comment }} 
+        <br>
+    {% endfor %}
+{% endblock comments %}

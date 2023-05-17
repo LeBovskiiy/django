@@ -1,4 +1,5 @@
-import re                                                    # Регулярные выражение
+import re  # Регулярные выражение
+
 from django.core.validators import ValidationError
 
 

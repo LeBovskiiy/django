@@ -1,10 +1,19 @@
-{% extends 'shop/base.html' %}
+{% extends 'base.html' %}
+
 
 {% block title %}Home{% endblock title %}
 
 {% load static %}
 
 {% block content %}
+<div class="categories-list">
+<ul class="list-group">
+    {% for categorie in categories %}
+    <li class="list-group-item"><a href="{% url 'shop:categorie' categorie.category %}">{{ categorie }}</a></li>
+    {% endfor %}
+</ul>
+</div>
+
 
 <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
 <section class="carusel-section">
@@ -38,20 +47,17 @@
             <div class="card" style="width: 18rem;">
                 {% if user.is_authenticated %}
                 <div class="add-to-basket">
-                <a href="{% url 'cart-action' product.pk  'add' %}"><img src="{% static 'img/basket.png' %}" width="20px" height="20px"></a>
+                <a href="{% url 'shop:cart-action' product.pk  'add' %}"><img src="{% static 'img/basket.png' %}" width="20px" height="20px"></a>
                 </div>
                 {% endif %}
-                <a href="{% url 'product-detail' product.pk %}."><img src='{{ product.image.url }}' class="card-img-top" alt="..."></a>
+                <a href="{% url 'shop:product-detail' product.pk %}."><img src='{{ product.image.url }}' class="card-img-top" alt="..."></a>
                 <div class="card-body">
-                <p class="card-text"><a href="{% url 'product-detail' product.pk %}">{{ product.name }}</a></p>
+                <p class="card-text"><a href="{% url 'shop:product-detail' product.pk %}">{{ product.name }}</a></p>
                 price: {{ product.price }}
-
-                
                 </div>
             </div>
         </li>
     </ul>
-
     {% endfor %}
     </section>
 </div>

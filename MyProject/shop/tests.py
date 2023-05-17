@@ -1,9 +1,12 @@
-from django.test import TestCase, Client
-
 import os
-from pathlib import Path
+
+from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import Client, TestCase
 from django.urls import reverse
+
+from users.models import *
+
 from .models import Product, ProductCategory
 from .views import *
 
@@ -39,6 +42,7 @@ class ProductTests(TestCase):
             os.remove(path=media_folder + '\\' + i)
         
 class HomePageViewTestCase(TestCase):
+    
     def setUp(self) -> None:
         self.client = Client()
 
@@ -52,7 +56,6 @@ class HomePageViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
 class SearchResultViewTestCase(TestCase):
-    
     
     def setUp(self) -> None:
         file_content = b'test_file'
@@ -113,3 +116,79 @@ class SearchResultViewTestCase(TestCase):
 
         for i in image_list:
             os.remove(path=media_folder + '\\' + i)
+
+class TestProductDetailView(TestCase):
+    
+    def setUp(self) -> None:
+        self.upload_file = SimpleUploadedFile('test_file', b'Content', content_type='image/png')
+        self.client = Client()
+        self.product_create = Product.objects.create(name='product', description='description', price=100, image=self.upload_file)
+        
+    def test_get_request(self):
+        self.prodcut = Product.objects.get(name='product', description='description', price=100)
+        self.response = self.client.get('/prodcut/1/')
+        self.assertEqual(self.response.status_code, 302)
+        self.assertQuerysetEqual(self.response.context['product_detail'], [self.product])
+        self.assertContains(self.response, 'product')
+        self.assertEqual(self.product.name, 'product')
+        self.assertEqual(self.product.description, 'description')
+        self.assertEqual(self.product.price, 100)
+        self.assertEqual(self.product.image, self.upload_file)
+
+    def tearDown(self) -> None:
+        media_folder = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'media', 'shop')
+        image_list = []
+        for file in os.listdir(media_folder):
+            if 'test_file' in file:
+                image_list.append(file)
+
+        for i in image_list:
+            os.remove(path=media_folder + '\\' + i)
+
+class TestBasketView(TestCase):
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.upload_file = SimpleUploadedFile('test_file', b'Content', content_type='image/png')
+        self.prodcut = Product.objects.create(name='product', description='description', price=100, image=self.upload_file)
+        self.User = get_user_model()
+        self.user = self.User.objects.create(
+            email='test@example.com',
+            password='password123',
+            username='Test User',
+            phone='+38093939393',
+        )
+        self.basket = Basket.objects.create(handler=self.user)
+        self.cart_item = CartItem.objects.create(basket=self.basket, product=self.prodcut, quantity=1)        
+    def test_get_request(self):
+        self.response = self.client.get('/basket/')
+        self.assertEqual(self.response.status_code, 200)
+        self.assertContains(self.response, 'product')
+        self.assertQuerysetEqual(self.response.context['cart_items'], [self.cart_item])
+        
+    def test_user_basket(self):
+        self.assertEqual(self.basket.handler, self.user)
+        self.assertEqual(self.cart_item.basket, self.basket)
+        self.assertEqual(self.cart_item.product, self.prodcut)
+        self.assertEqual(self.cart_item.quantity, 1)
+
+class TestProductCategorie(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.upload_file = SimpleUploadedFile('test_file', b'Content', content_type='image/png')
+        self.categorie = ProductCategory.objects.create(category='SomeCategorie')
+        self.prodcut = Product.objects.create(name='product', description='description', price=100, image=self.upload_file, categories=self.categorie)
+
+    def test_corect_init(self):
+        self.assertEqual(self.categorie.category, 'SomeCategorie')
+        self.assertEqual(self.prodcut.categories, self.categorie)
+
+    def test_relation(self):
+        categorie = ProductCategory.objects.get(category='SomeCategorie')
+        self.assertQuerysetEqual(categorie.objects.all(), self.prodcut)
+
+    def test_categorie_view(self):
+        self.response = self.client.get('/')
+        self.assertContains(self.response, 'categories')
+        self.assertEqual(self.response.status_code, 200)

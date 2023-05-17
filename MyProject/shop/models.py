@@ -13,7 +13,7 @@ class Product(models.Model):
     price = models.IntegerField(verbose_name="Price")
     image = models.ImageField(upload_to=user_directory_path, verbose_name='Photo', blank=True, null=True)
     tags = models.ManyToManyField(to="ProductTags", blank=True)
-    categories = models.ManyToManyField(to="ProductCategory", blank=True)
+    categories = models.ManyToManyField(to="ProductCategory", blank=True, related_name='product_category')
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):

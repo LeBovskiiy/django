@@ -1,0 +1,13 @@
+
+{% block user_form %}
+
+{% if user.is_authenticated %}a
+    <form method="POST">
+        {% csrf_token %}
+        {{ review_form }}
+        <button type="submit">Post Comment</button>
+    </form>
+
+{% endif %}
+
+{% endblock user_form %}
