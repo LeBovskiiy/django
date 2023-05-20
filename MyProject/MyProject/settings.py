@@ -59,9 +59,9 @@ ROOT_URLCONF = 'MyProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'),
-                (os.path.join(BASE_DIR, 'shop', 'templates')),
-                (os.path.join(BASE_DIR, 'users', 'templates')),     
+        'DIRS': [BASE_DIR / 'templates',
+                (BASE_DIR / 'shop'/ 'templates'),
+                (BASE_DIR/ 'users'/ 'templates'),     
             ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -134,15 +134,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static' / 'root'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    BASE_DIR / 'static'
 ]
 
 MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
