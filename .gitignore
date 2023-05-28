@@ -4,3 +4,4 @@
 .env
 proj_plan.png
 MyProject/media/shop/
+__pycache__/
