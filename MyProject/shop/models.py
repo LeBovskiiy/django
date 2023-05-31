@@ -11,7 +11,10 @@ class ProductManager(models.Manager):
         return Product.objects.all()
     
     def filter_by_name(self, product_name: str):
-        return Product.objects.filter(name__istartswith=product_name).values('pk', 'name', 'price', 'image')
+        return Product.objects.filter(name__istartswith=product_name)
+
+    def get_commets(self, product_id):
+        return Product.objects.get(id=product_id).comments.all()
 
 
 class Product(models.Model):
@@ -43,6 +46,7 @@ class Product(models.Model):
         )
     quantity = models.PositiveIntegerField(default=1)
     objects = ProductManager()
+    comment = ProductManager()
     
     class Meta:
         verbose_name = 'Продукт'
@@ -76,8 +80,8 @@ class ProductCategoryManager(models.Manager):
         return ProductCategory.objects \
             .get(category=category_name) \
             .product_category.all()
-            
-
+    
+    
 class ProductCategory(models.Model):
     '''Категория продукта'''
     category = models.CharField(

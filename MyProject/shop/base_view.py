@@ -5,8 +5,8 @@ from django.views import View
 
 
 class BaseView(View):
-    """Базовый класс для всех вюшек, который обрабатывает исключения."""
-    def dispatch(self, request: http.HttpRequest, *args, **kwargs) -> http.HttpResponse:
+    '''Базовый класс для всех вюшек, который обрабатывает исключения.'''
+    def dispatch(self, request, *args, **kwargs):
         try:
             return super().dispatch(request, *args, **kwargs)
         
@@ -30,5 +30,5 @@ class BaseView(View):
         return redirect('method-not-allowed')
     
 class MethodNotAllowedView(View):
-    def http_method_not_allowed(self, request: http.HttpRequest, *args: any, **kwargs: any) -> http.HttpResponse:
+    def http_method_not_allowed(self, request: http.HttpRequest, *args, **kwargs):
         return render(request, template_name='shop/errors.html', context={'message': 'Ошыбка 405, метод недопустим'}, status=405)

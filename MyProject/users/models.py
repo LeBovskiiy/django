@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 
 from shop.models import Product
 
+
 class BasketManager(models.Manager):
     
     def get_handler(self, user):
@@ -28,7 +29,7 @@ class Basket(models.Model):
     
 
 class CustomUser(AbstractUser, BaseUserManager):
-    """Кастомная модель юзера, с телефоном и корзиной"""
+    '''Кастомная модель юзера, с телефоном и корзиной'''
     phone = models.CharField(
         'User phone number', 
         max_length=16,
@@ -45,7 +46,7 @@ class CartItemManager(models.Manager):
     def get_cart_items(self, basket: Basket):
         return basket.baskets.all()
     
-    def add_quantity(self, product_id, user: 'request.user'):
+    def add_quantity(self, product_id, user):
         product = get_object_or_404(Product, id=product_id)
         basket, created = Basket.objects.get_or_create(handler=user)
         cart_items, created = CartItem.objects.get_or_create(

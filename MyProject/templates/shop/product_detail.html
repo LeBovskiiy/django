@@ -25,8 +25,8 @@
     </form> -->
 <!-- 
 {% endif %} -->
-<!-- <h4>Users reviews</h4>
-{% for comment in comments %}
+<h4>Users reviews</h4>
+{% comment %} {% for comment in comments %}
 <ul>
     <li>
     User: {{ comment.user.username }}<br>
@@ -34,7 +34,7 @@
     Comment: {{ comment.comment }} 
     </li>
 </ul>
-<br> -->
-<!-- {% endfor %} -->
+<br>
+{% endfor %} {% endcomment %}
 {% include 'shop/comments.html' %}
 {% endblock content %}

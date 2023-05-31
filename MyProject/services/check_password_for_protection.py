@@ -1,4 +1,4 @@
-import re  # Регулярные выражение
+import re
 
 from django.core.validators import ValidationError
 
