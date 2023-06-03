@@ -76,10 +76,13 @@ class ProductCategoryManager(models.Manager):
     def get_all_categories(self):
         return ProductCategory.objects.all()
     
-    def get_products_by_category(self, category_name):
+    def get_products_by_category(self, categ_id):
         return ProductCategory.objects \
-            .get(category=category_name) \
+            .get(id=categ_id) \
             .product_category.all()
+            
+    # def get_prod(self, *category_name):
+    #     return ProductCategory.objects.filter(category=[category_name]).prefetch_related('product_category')
     
     
 class ProductCategory(models.Model):

@@ -47,7 +47,7 @@ urlpatterns = [
         name='cart-action'
         ),
     path(
-        'prodcuts_by_categories/<str:category_name>/',
+        'prodcuts_by_categories/<str:cate_id>/',
         ProductCategoryView.as_view(), 
         name='categorie'
         ),
