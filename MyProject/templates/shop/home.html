@@ -9,7 +9,7 @@
 <div class="categories-list">
 <ul class="list-group">
     {% for categorie in categories %}
-    <li class="list-group-item"><a href="{% url 'shop:categorie' categorie.category %}">{{ categorie }}</a></li>
+    <li class="list-group-item"><a href="{% url 'shop:categorie' categorie.pk %}">{{ categorie }}</a></li>
     {% endfor %}
 </ul>
 </div>

@@ -6,9 +6,10 @@ from django.shortcuts import redirect, render
 from django.views.generic import (CreateView, DetailView, ListView,
                                   TemplateView)
 from django.contrib.auth.mixins import LoginRequiredMixin
-from users.models import CartItem
 
 from rest_framework import generics
+
+from users.models import CartItem
 
 from .base_view import BaseView
 from .forms import UserReview, UserReviewForm
@@ -41,7 +42,6 @@ class SearchResultView(ListView, BaseView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         return super().get(request, *args, **kwargs)
         
-
     def get_queryset(self, *args, **kwargs):
         query = self.request.GET.get('q')
         sort_q = self.request.GET.get('sort-by')
@@ -118,17 +118,17 @@ class CategoriesView(ListView, HomePageViews):
             return render(request, 'shop/categories.html', context)
 
 
-class ProductCategoryView(ListView):
+class ProductCategoryView(BaseView, ListView):
 
-    def get(self, request: HttpRequest, category_name) -> HttpResponse:
-        products = ProductCategory.objects.get_products_by_category(category_name)
+    def get(self, request: HttpRequest, cate_id) -> HttpResponse:
+        products = ProductCategory.objects.get_products_by_category(cate_id)
         context = {
             'products': products
         }
         return render(request, 'shop/prodcuts_by_categories.html', context=context) 
 
 
-class UserReviewView(CreateView, LoginRequiredMixin):
+class UserReviewView(BaseView, CreateView, LoginRequiredMixin):
     model = UserReview
     form_class = UserReviewForm
     success_url = 'users/review_thanks.html'
@@ -141,7 +141,7 @@ class UserReviewView(CreateView, LoginRequiredMixin):
         return super(UserReview, self).form_valid(form)
 
 
-class UsersCommentsView(ListView):
+class UsersCommentsView(BaseView, ListView):
     template_name = 'shop/comments.html'
     paginate_by = 15
     
@@ -157,12 +157,13 @@ class UsersCommentsView(ListView):
         return comments
 
 
-class ProductDetailView(DetailView, BaseView):
+class ProductDetailView(BaseView, DetailView):
     '''Вюха для просмотра деталей товара'''
     model = Product
     template_name = 'shop/product_detail.html'
     
     def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
         form = UserReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
@@ -170,19 +171,20 @@ class ProductDetailView(DetailView, BaseView):
             review.product = self.get_object()
             review.user = user
             review.save()
-            review.reset()
         else:
             return render(request, 'shop/errors.html', {
                 'message': 'Form is not valid'
                 })
+        return render(request, 'shop/product_detail.html', context=context)    
             
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['product_detail'] = Product.objects.get(id=self.kwargs['pk'])
+        product = Product.objects.get(id=self.kwargs['pk'])
+        context['product'] = product
         context['review_form'] = UserReviewForm()
-        context['comments'] = Product.comment.get_commets(self.kwargs['pk'])
+        context['comments'] = product.comments.all()      
         return context
-                
+    
     
 class ProductAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
