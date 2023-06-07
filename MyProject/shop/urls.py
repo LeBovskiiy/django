@@ -2,10 +2,10 @@ from django.urls import path
 
 from .views import HomePageViews, SearchResultView, \
                    ProductDetailView, UserReviewView, \
-                   UsersCommentsView, BasketView, \
+                   BasketView, ProductCategoryAPIView, \
                    CartActionView, ProductCategoryView, \
-                   ProductAPIView, ProductByCategoryAPIView, \
-                   ProductCategoryAPIView
+                   ProductAPIView, ProductByCategoryAPIView \
+                   
                    
 
 app_name = 'shop'
@@ -30,11 +30,6 @@ urlpatterns = [
         'product/<int:pk>/review/', 
         UserReviewView.as_view(), 
         name='user_review'
-        ),
-    path(
-        'product/comments/<int:pk>/', 
-        UsersCommentsView.as_view(), 
-        name='comments'
         ),
     path(
         'basket/', 

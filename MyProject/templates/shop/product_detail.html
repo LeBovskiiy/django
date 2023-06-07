@@ -13,28 +13,16 @@
         <button id="add-to-cart-button" type="submit"><a href="{% url 'shop:cart-action' product.pk 'add' %}">Add to basket</a></button>
     </li>
 </ul>
-{% block user_form %}
-{% include 'shop/comment_form.html' %}
-{% endblock user_form %}
-<!-- {% if user.is_authenticated %}
+{% if user.is_authenticated %}
     <h2>Leave your feedback</h2>
+
     <form method="POST">
         {% csrf_token %}
-        {{ review_form }}
+        {{ form.as_p }}
         <button type="submit">Post Comment</button>
-    </form> -->
-<!-- 
-{% endif %} -->
+    </form> 
+{% endif %}
+
 <h4>Users reviews</h4>
-{% comment %} {% for comment in comments %}
-<ul>
-    <li>
-    User: {{ comment.user.username }}<br>
-    Rate: {{ comment.rate }} <br>
-    Comment: {{ comment.comment }} 
-    </li>
-</ul>
-<br>
-{% endfor %} {% endcomment %}
 {% include 'shop/comments.html' %}
 {% endblock content %}
