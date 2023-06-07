@@ -1,3 +1,5 @@
+from typing import Any
+from django.db import models
 import django.http as http
 from django import http
 from django.core.exceptions import PermissionDenied
@@ -17,9 +19,9 @@ from .models import Product, ProductCategory
 from .serilizers import ProductSerializer, \
                         ProductCategorySerializer, \
                         ProductByCategorySerializer 
+                        
 
-
-class HomePageViews(TemplateView, BaseView):
+class HomePageViews(BaseView, TemplateView):
     '''Вюха домашней страницы'''
     template_name = 'shop/home.html'
 
@@ -37,7 +39,7 @@ class SearchResultView(ListView, BaseView):
     model = Product
     template_name = 'shop/search_result.html'
     context_object_name = 'products'
-    paginate_by = 10
+    paginate_by = 2
     
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         return super().get(request, *args, **kwargs)
@@ -141,51 +143,39 @@ class UserReviewView(BaseView, CreateView, LoginRequiredMixin):
         return super(UserReview, self).form_valid(form)
 
 
-class UsersCommentsView(BaseView, ListView):
-    template_name = 'shop/comments.html'
-    paginate_by = 15
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(self.kwargs)
-        context['comments'] = self.get_queryset()
-        return context
-    
-    def get_queryset(self, **kwargs):
-        product_id = self.kwargs['product_id']
-        comments = Product.objects.get(id=product_id).comments.all()
-        
-        return comments
-
-
-class ProductDetailView(BaseView, DetailView):
+class ProductDetailView(BaseView, TemplateView):
     '''Вюха для просмотра деталей товара'''
-    model = Product
     template_name = 'shop/product_detail.html'
     
     def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
         form = UserReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
             user = self.request.user
-            review.product = self.get_object()
+            review.product = Product.objects.get(id=self.kwargs['pk'])
             review.user = user
             review.save()
         else:
             return render(request, 'shop/errors.html', {
                 'message': 'Form is not valid'
                 })
-        return render(request, 'shop/product_detail.html', context=context)    
+        return self.get(request, *args, **kwargs)
             
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         product = Product.objects.get(id=self.kwargs['pk'])
         context['product'] = product
-        context['review_form'] = UserReviewForm()
-        context['comments'] = product.comments.all()      
-        return context
-    
-    
+        context['comments'] = UserReview.objects \
+            .filter(product=product) \
+            .select_related('product') \
+            .select_related('user')
+        if self.request.user.is_authenticated:
+            context['form'] = UserReviewForm()
+            return context
+        else:
+            return context
+                
+        
 class ProductAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer

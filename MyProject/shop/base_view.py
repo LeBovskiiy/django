@@ -15,10 +15,10 @@ class BaseView(View):
     def dispatch(self, request, *args, **kwargs):
         try:
             response = super().dispatch(request, *args, **kwargs)
+            return response
         except Exception as e:
             traceback_message = traceback.format_exc()
             asyncio.run(main(str(traceback_message)))
-
             return http.JsonResponse({'message': str(traceback_message)})
         # Обработка ошыбки 404
         
@@ -28,19 +28,6 @@ class BaseView(View):
         # Обработка ошыбки 403
         except PermissionDenied as exception:
             return self.handler403(request, exception, *args, **kwargs)
-        
-        if isinstance(response, (dict, list)):
-            return self._response(response)
-        else:
-            return response
-        
-    @staticmethod
-    def _response(data, *, status=200):
-        return http.JsonResponse(
-            data,
-            status=status,
-            safe=not isinstance(data, list)
-        )
         
     def handler404(self, request, exception, *args, **kwargs):
         context = {'message': 'Ошибка 404, страница не найдена'}
@@ -57,3 +44,4 @@ class BaseView(View):
 class MethodNotAllowedView(View):
     def http_method_not_allowed(self, request: http.HttpRequest, *args, **kwargs):
         return render(request, template_name='errors.html', context={'message': 'Ошыбка 405, метод недопустим'}, status=405)
+    
